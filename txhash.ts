@@ -5,8 +5,8 @@ import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 class CosmJsRpcMethods {
     private client: any;
     private tendermintClient: any;
-    private rpUrl:string = "http://localhost:26657";
-    private txHash:string = "19C061131C65F093A3EDFD5A4F7C86C9B83BF94B5F9B813B83CDC50D66CE14C1";
+    private rpUrl:string = "ws://localhost:26657";
+    private txHash:string = "2933E644B6832FDCDC9FF1F706279C773494BAEF0DF914AB2EFDB160B2E260B6";
     private blockNumber:number = parseInt("64");
 
     public async getTransaction() {

@@ -6,7 +6,8 @@
   "scripts": {
     "experiment": "ts-node experiment.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "tx": "ts-node txhash.ts"
+    "tx": "ts-node txhash.ts",
+    "contract": "ts-node contract.ts"
   },
   "author": "B9lab",
   "license": "ISC",
