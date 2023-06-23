@@ -17,7 +17,6 @@ const runAll = async(): Promise<void> => {
     
     // creating connection instance
     const client = await SigningStargateClient.connectWithSigner(rpc, signer);
-
     // get address with prefix
     const publicKey = encodeSecp256k1Pubkey(account.pubkey);
     const address = pubkeyToAddress(publicKey, addressPrefix);
@@ -28,7 +27,7 @@ const runAll = async(): Promise<void> => {
     // get block data
     const blockHeight = await client.getHeight(); // Replace with the desired block height
     
-    const block: Block | null = await client.getBlock(63);
+    const block: Block | null = await client.getBlock(143);
     if (block) {
       console.log('Block Data:', block);
     // console.log( block.txs.toString())

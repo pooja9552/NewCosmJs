@@ -7,21 +7,27 @@
     "experiment": "ts-node experiment.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "tx": "ts-node txhash.ts",
-    "contract": "ts-node contract.ts"
+    "contract": "ts-node contract.ts",
+    "websocket": "ts-node websocket.ts",
+    "websockets": "ts-node websockets.ts"
   },
   "author": "B9lab",
   "license": "ISC",
   "devDependencies": {
+    "@types/websocket": "^1.0.5",
     "ts-node": "10.7.0"
   },
   "dependencies": {
     "@cosmjs/amino": "^0.30.1",
     "@cosmjs/cosmwasm-stargate": "^0.30.1",
     "@cosmjs/encoding": "^0.30.1",
+    "@cosmjs/launchpad": "^0.27.1",
     "@cosmjs/proto-signing": "^0.30.1",
     "@cosmjs/stargate": "^0.28.13",
     "@cosmjs/tendermint-rpc": "^0.30.1",
     "axios": "^1.4.0",
-    "crypto-js": "^4.1.1"
+    "crypto-js": "^4.1.1",
+    "websocket": "^1.0.34",
+    "ws": "^8.13.0"
   }
 }

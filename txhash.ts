@@ -12,7 +12,9 @@ class CosmJsRpcMethods {
     public async getTransaction() {
         try {
             this.client = await SigningCosmWasmClient.connect(this.rpUrl);
+            
             const response = await this.client.queryClient.tx.getTx(this.txHash)
+        
             return response;
         } catch (err) {
             console.log("errrorr==", err);
@@ -23,7 +25,8 @@ class CosmJsRpcMethods {
     public async getBlockData() {
         try {
             this.client = await SigningCosmWasmClient.connect(this.rpUrl);
-            const response = await this.client.getBlock(this.blockNumber);
+            // const response = await this.client.getHeight();
+            const response = await this.client.getBlock();
             return response;
         } catch (err) {
             console.log("errrorr==", err);
@@ -108,3 +111,4 @@ const methods = new CosmJsRpcMethods();
     console.log("Node Health=========", health);
     console.log("Node Status=========", status);
 })();
+export default new CosmJsRpcMethods()
