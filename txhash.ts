@@ -1,10 +1,10 @@
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { pubkeyToAddress,Tendermint37Client } from "@cosmjs/tendermint-rpc";
+import { pubkeyToAddress, Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { fromBase64, toHex } from "@cosmjs/encoding";
 import { anyToSinglePubkey } from "@cosmjs/proto-signing";
 import { QueryClient, setupStakingExtension } from "@cosmjs/stargate";
 import { assert } from "@cosmjs/utils";
-import{ bech32 } from "bech32";
+import { bech32 } from "bech32";
 
 
 
@@ -57,8 +57,8 @@ class CosmJsRpcMethods {
             this.tendermintClient = await Tendermint37Client.connect(this.rpUrl);
             const response = await this.tendermintClient.validatorsAll();
             const address = toHex(response.validators[0].address).toUpperCase();
-            console.log("cscs",address);
-            response.newParameter=address
+            console.log("cscs", address);
+            response.newParameter = address
             return response;
         } catch (err) {
             console.log("errrorr==", err);
@@ -103,17 +103,13 @@ class CosmJsRpcMethods {
         try {
             this.tendermintClient = await Tendermint37Client.connect(this.rpUrl);
             console.log("client:", await this.tendermintClient.status());
-
             const chainHeight = (await this.tendermintClient.status()).syncInfo.latestBlockHeight;
-
             console.log("height===", chainHeight);
             /** Map from proposer address to number of proposed blocks */
             const proposedBlocks = new Map<string, number>();
-
             // Top is the value after than the next request's maximum
             let top = chainHeight + 1;
             let headersCount = 0;
-
             // CSV header
             console.log("height,proposer,num_txs,gas_used,gas_wanted");
             const queryClient = QueryClient.withExtensions(this.tendermintClient, setupStakingExtension);
@@ -145,23 +141,21 @@ class CosmJsRpcMethods {
     }
 
 
-public async getDelegator(operatorAddr:string) {
-    try{
-        console.log("cdscdsc===",operatorAddr)
-    const address = bech32.decode(operatorAddr);
-    // console.log(address);
-    // console.log(address.words.length)
-    return bech32.encode(this.bech32PrefixAccAddr, address.words);
- }catch(err){
-    console.log("errrorr==", err);
-    return err; 
- }
+    public async getDelegatorAddress(operatorAddr: string) {
+        try {
+            let address = await bech32.decode(operatorAddr);
+            let delegatorAddress = await bech32.encode(this.bech32PrefixAccAddr, address.words);
+            return delegatorAddress;
+        } catch (err) {
+            console.log("errrorr==", err);
+            return err;
+        }
+    }
 }
-  }
 
 
 
- 
+
 
 
 
@@ -176,8 +170,8 @@ const methods = new CosmJsRpcMethods();
     const health = await methods.getHealth();
     const status = await methods.getStatus();
     const getTendermintValidatorAddressToValoperAddress = await methods.getTendermintValidatorAddressToValoperAddress();
-    const getDelegator = await methods.getDelegator("wasmvaloper10lkpzllesrz0yrnlmcn0dplnetr7da9j85g34x");
-    
+    const getDelegator = await methods.getDelegatorAddress("wasmvaloper10lkpzllesrz0yrnlmcn0dplnetr7da9j85g34x");
+
     // console.log("transaction Data============", transactionData);
     // console.log("Block Data============", blockData);
     console.log("Full Block Data==========", fullblockInfo);
@@ -186,7 +180,7 @@ const methods = new CosmJsRpcMethods();
     // console.log("Node Health=========", health);
     // console.log("Node Status=========", status);
     console.log("getTendermintValidatorAddressToValoperAddress=========", getTendermintValidatorAddressToValoperAddress);
-   console.log("The converted address is:",getDelegator);
-   
+    console.log("The converted address is:", getDelegator);
+
 })();
 export default new CosmJsRpcMethods()
