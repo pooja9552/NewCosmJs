@@ -174,13 +174,13 @@ const methods = new CosmJsRpcMethods();
 
     // console.log("transaction Data============", transactionData);
     // console.log("Block Data============", blockData);
-    console.log("Full Block Data==========", fullblockInfo);
-    console.log("All Validators=========", validators);
-    console.log("Block Rewards=========", rewards);
+    // console.log("Full Block Data==========", fullblockInfo);
+    // console.log("All Validators=========", validators);
+    // console.log("Block Rewards=========", rewards);
     // console.log("Node Health=========", health);
     // console.log("Node Status=========", status);
-    console.log("getTendermintValidatorAddressToValoperAddress=========", getTendermintValidatorAddressToValoperAddress);
-    console.log("The converted address is:", getDelegator);
+     //console.log("getTendermintValidatorAddressToValoperAddress=========", getTendermintValidatorAddressToValoperAddress);
+     console.log("The converted address is:", getDelegator);
 
 })();
 export default new CosmJsRpcMethods()
