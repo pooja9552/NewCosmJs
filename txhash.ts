@@ -8,7 +8,7 @@ import { bech32 } from "bech32";
 
 
 
-class CosmJsRpcMethods {
+class CosmJsRpcMethods3 {
     private client: any;
     private tendermintClient: any;
     private rpUrl: string = "ws://localhost:26657";
@@ -39,13 +39,13 @@ class CosmJsRpcMethods {
         }
     }
 
-    public async getFullBlockInfo() {
+    public async getFullBlockInfo(cosmWasmClient: any) {
         try {
-            this.client = await SigningCosmWasmClient.connect(this.rpUrl);
-            const response = await this.client.queryClient.tmClient.block(this.blockNumber);
-            //  const address = toHex(response.block.header.proposerAddress).toUpperCase();
-            // console.log("addr",address);
-            return response;
+
+            const response = await cosmWasmClient.queryClient.tmClient.block(this.blockNumber);
+              const address = toHex(response.block.header.proposerAddress).toUpperCase();
+            //  console.log("addr",address);
+            return address;
         } catch (err) {
             console.log("errrorr==", err);
             return err;
@@ -99,24 +99,24 @@ class CosmJsRpcMethods {
         }
     }
 
-    public async getTendermintValidatorAddressToValoperAddress() {
+    public async getTendermintValidatorAddressToValoperAddress(tendermintClient: any, blockHeight: number, address: string) {
         try {
-            this.tendermintClient = await Tendermint37Client.connect(this.rpUrl);
-            console.log("client:", await this.tendermintClient.status());
-            const chainHeight = (await this.tendermintClient.status()).syncInfo.latestBlockHeight;
-            console.log("height===", chainHeight);
+            // this.tendermintClient = await Tendermint37Client.connect(this.rpUrl);
+            // console.log("client:", await this.tendermintClient.status());
+            // const chainHeight = (await this.tendermintClient.status()).syncInfo.latestBlockHeight;
+            // console.log("height===", chainHeight);
             /** Map from proposer address to number of proposed blocks */
             const proposedBlocks = new Map<string, number>();
             // Top is the value after than the next request's maximum
-            let top = chainHeight + 1;
-            let headersCount = 0;
+            // let top = chainHeight + 1;
+            // let headersCount = 0;
             // CSV header
-            console.log("height,proposer,num_txs,gas_used,gas_wanted");
-            const queryClient = QueryClient.withExtensions(this.tendermintClient, setupStakingExtension);
+            // console.log("height,proposer,num_txs,gas_used,gas_wanted");
+            const queryClient = QueryClient.withExtensions(tendermintClient, setupStakingExtension);
             const tendermintToOperator = new Map<string, string>();
             let nextKey: Uint8Array | undefined;
             do {
-                console.log(`Load validators page ...`);
+                // console.log(`Load validators page ...`);
                 const res = await queryClient.staking.validators("BOND_STATUS_BONDED", nextKey);
                 res.validators.forEach((r) => {
                     assert(r.consensusPubkey);
@@ -127,13 +127,14 @@ class CosmJsRpcMethods {
                 nextKey = res.pagination?.nextKey;
             } while (nextKey?.length)
 
-            console.log(`Total blocks scanned: ${headersCount} (from ${chainHeight} to ${top})`);
-            const res = await this.tendermintClient.validatorsAll(chainHeight);
-            for (const val of res.validators) {
-                const address = toHex(val.address).toUpperCase();
-                console.log(`address:${address},votingPower:${val.votiaddressngPower},tendermintToOperator:${tendermintToOperator.get(address) ?? "?"},proposedBlocks:${proposedBlocks.get(address) ?? 0}`);
-            }
-            return "succesfully==============";
+            // console.log(`Total blocks scanned: ${headersCount} (from ${blockHeight} to ${top})`);
+            // const res = await tendermintClient.validatorsAll(blockHeight);
+            // for (const val of res.validators) {
+            //     const address = toHex(val.address).toUpperCase();
+            //     console.log(`address:${address},votingPower:${val.votiaddressngPower},tendermintToOperator:${tendermintToOperator.get(address) ?? "?"},proposedBlocks:${proposedBlocks.get(address) ?? 0}`);
+            // }
+            const valoperAddress: any = tendermintToOperator.get(address);
+            return valoperAddress;
         } catch (err) {
             console.log("errrorr==", err);
             return err;
@@ -141,7 +142,7 @@ class CosmJsRpcMethods {
     }
 
 
-    public async getDelegatorAddress(operatorAddr: string) {
+    public async getDelegatorAddress(operatorAddr: any) {
         try {
             let address = await bech32.decode(operatorAddr);
             let delegatorAddress = await bech32.encode(this.bech32PrefixAccAddr, address.words);
@@ -159,18 +160,18 @@ class CosmJsRpcMethods {
 
 
 
-const methods = new CosmJsRpcMethods();
+const methods = new CosmJsRpcMethods3();
 
 (async () => {
-    const transactionData = await methods.getTransaction();
-    const blockData = await methods.getBlockData();
-    const fullblockInfo = await methods.getFullBlockInfo();
-    const validators = await methods.getAllBlockValidator();
-    const rewards = await methods.getBlockRewards();
-    const health = await methods.getHealth();
-    const status = await methods.getStatus();
-    const getTendermintValidatorAddressToValoperAddress = await methods.getTendermintValidatorAddressToValoperAddress();
-    const getDelegator = await methods.getDelegatorAddress("wasmvaloper10lkpzllesrz0yrnlmcn0dplnetr7da9j85g34x");
+    // const transactionData = await methods.getTransaction();
+    // const blockData = await methods.getBlockData();
+    // //const fullblockInfo = await methods.getFullBlockInfo();
+    // const validators = await methods.getAllBlockValidator();
+    // const rewards = await methods.getBlockRewards();
+    // const health = await methods.getHealth();
+    // const status = await methods.getStatus();
+    // const getTendermintValidatorAddressToValoperAddress = await methods.getTendermintValidatorAddressToValoperAddress();
+    // const getDelegator = await methods.getDelegatorAddress("wasmvaloper10lkpzllesrz0yrnlmcn0dplnetr7da9j85g34x");
 
     // console.log("transaction Data============", transactionData);
     // console.log("Block Data============", blockData);
@@ -179,8 +180,8 @@ const methods = new CosmJsRpcMethods();
     // console.log("Block Rewards=========", rewards);
     // console.log("Node Health=========", health);
     // console.log("Node Status=========", status);
-     //console.log("getTendermintValidatorAddressToValoperAddress=========", getTendermintValidatorAddressToValoperAddress);
-     console.log("The converted address is:", getDelegator);
+    //  console.log("getTendermintValidatorAddressToValoperAddress=========", getTendermintValidatorAddressToValoperAddress);
+    //  console.log("The converted address is:", getDelegator);
 
 })();
-export default new CosmJsRpcMethods()
+export default new CosmJsRpcMethods3()

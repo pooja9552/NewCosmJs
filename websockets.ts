@@ -3,7 +3,9 @@ import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate"
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc"
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing"
 import CosmJsRpcMethods from "./experiment"
-import CosmJsRpcMethods2 from "./contract";
+import contractJS from "./contract";
+import CosmJsPrcMethods3 from "./txhash";
+
 
 async function connect() {
 
@@ -29,7 +31,11 @@ async function connect() {
                 await delay(4000);
             const blockRewards = await CosmJsRpcMethods.getBlockRewards(tendermintClient);
             const amount = blockRewards.results[0].gasUsed;
-            const mintResp = await CosmJsRpcMethods2.mint(cosmWasmClient, wallet, amount);
+            const proposerAddress: any = await CosmJsPrcMethods3.getFullBlockInfo(cosmWasmClient);
+            const valoperAddress =await CosmJsPrcMethods3.getTendermintValidatorAddressToValoperAddress(tendermintClient, CosmJsRpcMethods.blockNumber, proposerAddress);
+            const address: any = await CosmJsPrcMethods3.getDelegatorAddress(valoperAddress);
+            
+            const mintResp = await contractJS.mint(cosmWasmClient, wallet, amount.toString(), address);
             console.log(mintResp);
             console.log(CosmJsRpcMethods.blockNumber);
             
