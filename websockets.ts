@@ -38,6 +38,8 @@ async function connect() {
             const mintResp = await contractJS.mint(cosmWasmClient, wallet, amount.toString(), address);
             console.log(mintResp);
             console.log(CosmJsRpcMethods.blockNumber);
+             const balance = await contractJS.query(cosmWasmClient, address)
+                console.log(balance.balance);
             
             await delay(4000);
             } catch (err) {

@@ -40,7 +40,29 @@ private client: any;
       return err;
     }
   }
+  public async query(cosmWasmClient: any, address: string) {
+    try {
+
+        // sending an query instruction to the contract
+        const response = await cosmWasmClient.queryContractSmart(
+            this.contract_address,
+            {
+                balance: {
+                    address: address,
+                },
+            },
+        )
+
+        return response
+    } catch (err) {
+        console.log("query error ==", err)
+        return err
+    }
 }
+ 
+  
+}
+
 
 // const rpcMethods = new CosmJsRpcMethods2();
 // rpcMethods.mint()

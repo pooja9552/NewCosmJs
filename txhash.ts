@@ -2,9 +2,14 @@ import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { pubkeyToAddress, Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { fromBase64, toHex } from "@cosmjs/encoding";
 import { anyToSinglePubkey } from "@cosmjs/proto-signing";
-import { QueryClient, setupStakingExtension } from "@cosmjs/stargate";
+import { QueryClient, setupStakingExtension,setupBankExtension } from "@cosmjs/stargate";
 import { assert } from "@cosmjs/utils";
 import { bech32 } from "bech32";
+import { SigningStargateClient } from "@cosmjs/stargate";
+//import { setupQueryClient } from "@cosmjs/stargate";
+const { Coin } = require("@cosmjs/launchpad");
+import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing"
+
 
 
 
@@ -151,12 +156,31 @@ class CosmJsRpcMethods3 {
             console.log("errrorr==", err);
             return err;
         }
+        
+    }
+
+
+
+    public async fetchValidatorBalance() {
+        try{
+          const validatorAddress:any = "wasm10lkpzllesrz0yrnlmcn0dplnetr7da9jjgadmu";
+         // const denominationSymbol="token"
+         const mnemonic =
+         "dignity warm witness lobster say rude risk mercy receive fabric feel hip merry crash easily cover throw alter spider fiction owner convince prevent jaguar"
+         const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, { prefix: "wasm" })
+         console.log("cscsd",wallet)
+         this.client = await SigningStargateClient.connectWithSigner(this.rpUrl,wallet)
+          const response = await this.client.getBalance(validatorAddress,"stake");
+          console.log("cdscdscdsc",response)
+          return response;
+
+        }catch(err){
+          console.log("errrorr==", err);
+              return err;
+  
+        }
     }
 }
-
-
-
-
 
 
 
@@ -172,6 +196,9 @@ const methods = new CosmJsRpcMethods3();
     // const status = await methods.getStatus();
     // const getTendermintValidatorAddressToValoperAddress = await methods.getTendermintValidatorAddressToValoperAddress();
     // const getDelegator = await methods.getDelegatorAddress("wasmvaloper10lkpzllesrz0yrnlmcn0dplnetr7da9j85g34x");
+    const fetchValidatorBalance = await methods.fetchValidatorBalance();
+
+    
 
     // console.log("transaction Data============", transactionData);
     // console.log("Block Data============", blockData);
@@ -182,6 +209,7 @@ const methods = new CosmJsRpcMethods3();
     // console.log("Node Status=========", status);
     //  console.log("getTendermintValidatorAddressToValoperAddress=========", getTendermintValidatorAddressToValoperAddress);
     //  console.log("The converted address is:", getDelegator);
+    console.log("balance",fetchValidatorBalance)
 
 })();
 export default new CosmJsRpcMethods3()
